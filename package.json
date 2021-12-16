@@ -1,5 +1,5 @@
 {
-  "name": "@scalemeup/characteristics-card",
+  "name": "@scalemeup/editorjs-characteristics-card",
   "version": "2.0.2",
   "description": "Characteristics Card tool for Editor.js",
   "scripts": {
