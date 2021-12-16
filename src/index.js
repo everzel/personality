@@ -13,7 +13,7 @@ const LOADER_DELAY = 500;
  * @property {string} name — person's name
  * @property {string} description - person's description
  * @property {string} link - link to person's website
- * @property {string} photo - person's photo url
+ * @property {Object|null} photo - person's photo data
  */
 
 /**
@@ -22,9 +22,8 @@ const LOADER_DELAY = 500;
  * @property {string} endpoint - image file upload url
  * @property {string} field - field name for uploaded image
  * @property {string} types - available mime-types
- * @property {string} namePlaceholder - placeholder for name field
- * @property {string} descriptionPlaceholder - description placeholder
- * @property {string} linkPlaceholder - link placeholder
+ * @property {string} propNamePlaceholder - placeholder for name field
+ * @property {string} propValuePlaceholder - placeholder for value field
  */
 
 /**
@@ -38,9 +37,9 @@ const LOADER_DELAY = 500;
  */
 
 /**
- * Personality Tool for the Editor.js
+ * Characteristics Card Tool for the Editor.js
  */
-export default class Personality {
+export default class CharacteristicsCard {
   /**
    * @param {PersonalityToolData} data - Tool's data
    * @param {PersonalityConfig} config - Tool's config
@@ -51,19 +50,20 @@ export default class Personality {
 
     this.nodes = {
       wrapper: null,
-      name: null,
-      description: null,
-      link: null,
-      photo: null
+      photo: null,
+      propRowsWrapper: null,
+      propAddButton: null,
+      propsContainer: null,
+      propRows: []
     };
 
     this.config = {
       endpoint: config.endpoint || '',
       field: config.field || 'image',
       types: config.types || 'image/*',
-      namePlaceholder: config.namePlaceholder || 'Name',
-      descriptionPlaceholder: config.descriptionPlaceholder || 'Description',
-      linkPlaceholder: config.linkPlaceholder || 'Link'
+      buttonLabel: config.buttonLabel || '+ Add',
+      propNamePlaceholder: config.propNamePlaceholder || 'Name',
+      propValuePlaceholder: config.propValuePlaceholder || 'Value'
     };
 
     /**
@@ -89,7 +89,7 @@ export default class Personality {
   static get toolbox() {
     return {
       icon: ToolboxIcon,
-      title: 'Personality'
+      title: 'Characteristics Card'
     };
   }
 
@@ -101,7 +101,7 @@ export default class Personality {
     const { body: { success, file } } = response;
 
     if (success && file && file.url) {
-      this.data.photo = file.url;
+      this.data.photo = file;
 
       this.showFullImage();
     }
@@ -113,7 +113,7 @@ export default class Personality {
   showFullImage() {
     setTimeout(() => {
       this.nodes.photo.classList.remove(this.CSS.loader);
-      this.nodes.photo.style.background = `url('${this.data.photo}') center center / cover no-repeat`;
+      this.nodes.photo.style.background = `url('${this.data.photo.url}') center center / cover no-repeat`;
     }, LOADER_DELAY);
   }
 
@@ -160,11 +160,15 @@ export default class Personality {
       /**
        * Tool's classes
        */
-      wrapper: 'cdx-personality',
-      name: 'cdx-personality__name',
-      photo: 'cdx-personality__photo',
-      link: 'cdx-personality__link',
-      description: 'cdx-personality__description'
+      wrapper: 'cdx-characteristics-card',
+      photo: 'cdx-characteristics-card__photo',
+      propsContainer: 'cdx-characteristics-card__container',
+      propRowsWrapper: 'cdx-characteristics-card__rows-wrapper',
+      propRow: 'cdx-characteristics-card__prop-row',
+      propName: 'cdx-characteristics-card__prop-name',
+      propValue: 'cdx-characteristics-card__prop-value',
+      propAddButton: 'cdx-characteristics-card__add-button',
+      propRemoveButton: 'cdx-characteristics-card__prop-remove-button'
     };
   }
 
@@ -174,20 +178,17 @@ export default class Personality {
    * @return {PersonalityToolData}
    */
   save(toolsContent) {
-    const name = toolsContent.querySelector(`.${this.CSS.name}`).textContent;
-    const description = toolsContent.querySelector(`.${this.CSS.description}`).textContent;
-    const link = toolsContent.querySelector(`.${this.CSS.link}`).textContent;
-    const photo = this.data.photo;
+    const props = [];
+    const photo = this.data.photo || null;
 
-    /**
-     * Fill missing fields with empty strings
-     */
-    Object.assign(this.data, {
-      name: name.trim() || '',
-      description: description.trim() || '',
-      link: link.trim() || '',
-      photo: photo || ''
+    this.nodes.propRows.forEach(row => {
+      const name = row.querySelector(`.${this.CSS.propName}`).textContent || '';
+      const value = row.querySelector(`.${this.CSS.propValue}`).textContent || '';
+
+      props.push({ name: name.trim(), value: value.trim() });
     });
+
+    Object.assign(this.data, { props, photo });
 
     return this.data;
   }
@@ -197,44 +198,30 @@ export default class Personality {
    * @return {HTMLDivElement}
    */
   render() {
-    const { name, description, photo, link } = this.data;
+    const { photo, props } = this.data;
 
     this.nodes.wrapper = this.make('div', this.CSS.wrapper);
+    this.nodes.propsContainer = this.make('div', this.CSS.propsContainer);
 
-    this.nodes.name = this.make('div', this.CSS.name, {
-      contentEditable: true
+    this.nodes.propAddButton = this.makePropAddButton();
+    const buttonWrapper = this.make('div');
+
+    buttonWrapper.appendChild(this.nodes.propAddButton);
+
+    this.nodes.propRows = [];
+    this.nodes.propRowsWrapper = this.make('div', this.CSS.propRowsWrapper);
+
+    (props || []).forEach(prop => {
+      this.makePropRow(prop.name, prop.value);
     });
 
-    this.nodes.description = this.make('div', this.CSS.description, {
-      contentEditable: true
-    });
-
-    this.nodes.link = this.make('div', this.CSS.link, {
-      contentEditable: true
-    });
+    this.nodes.propsContainer.appendChild(this.nodes.propRowsWrapper);
+    this.nodes.propsContainer.appendChild(buttonWrapper);
 
     this.nodes.photo = this.make('div', this.CSS.photo);
 
     if (photo) {
-      this.nodes.photo.style.background = `url('${photo}') center center / cover no-repeat`;
-    }
-
-    if (description) {
-      this.nodes.description.textContent = description;
-    } else {
-      this.nodes.description.dataset.placeholder = this.config.descriptionPlaceholder;
-    }
-
-    if (name) {
-      this.nodes.name.textContent = name;
-    } else {
-      this.nodes.name.dataset.placeholder = this.config.namePlaceholder;
-    }
-
-    if (link) {
-      this.nodes.link.textContent = link;
-    } else {
-      this.nodes.link.dataset.placeholder = this.config.linkPlaceholder;
+      this.nodes.photo.style.background = `url('${photo.url}') center center / cover no-repeat`;
     }
 
     this.nodes.photo.addEventListener('click', () => {
@@ -246,9 +233,7 @@ export default class Personality {
     });
 
     this.nodes.wrapper.appendChild(this.nodes.photo);
-    this.nodes.wrapper.appendChild(this.nodes.name);
-    this.nodes.wrapper.appendChild(this.nodes.description);
-    this.nodes.wrapper.appendChild(this.nodes.link);
+    this.nodes.wrapper.appendChild(this.nodes.propsContainer);
 
     return this.nodes.wrapper;
   }
@@ -262,10 +247,7 @@ export default class Personality {
     /**
      * Return false if fields are empty
      */
-    return savedData.name ||
-        savedData.description ||
-        savedData.link ||
-        savedData.photo;
+    return true;
   }
 
   /**
@@ -289,5 +271,84 @@ export default class Personality {
     }
 
     return el;
+  }
+
+  /**
+   * @return {HTMLElement}
+   */
+  makePropAddButton() {
+    const button = this.make('button', this.CSS.propAddButton);
+
+    button.innerText = this.config.buttonLabel;
+
+    button.addEventListener('click', () => {
+      this.makePropRow();
+    });
+
+    return button;
+  }
+
+  /**
+   * @param {string} name
+   * @param {string} value
+   */
+  makePropRow(name = '', value = '') {
+    const propRow = this.make('div', this.CSS.propRow);
+
+    propRow.dataset.index = String(this.nodes.propRows.length);
+
+    const nameEl = this.make('div', this.CSS.propName, {
+      contentEditable: true
+    });
+
+    if (name) {
+      nameEl.textContent = name;
+    } else {
+      nameEl.dataset.placeholder = this.config.propNamePlaceholder;
+    }
+
+    const valueEl = this.make('div', this.CSS.propValue, {
+      contentEditable: true
+    });
+
+    if (value) {
+      valueEl.textContent = value;
+    } else {
+      valueEl.dataset.placeholder = this.config.propValuePlaceholder;
+    }
+
+    const removeButton = this.make('button', this.CSS.propRemoveButton);
+
+    removeButton.innerHTML = '&#10005;';
+
+    removeButton.addEventListener('click', (e) => {
+      this.onRemovePropRow(
+        Number(e.target.parentNode.dataset.index)
+      );
+    });
+
+    propRow.appendChild(nameEl);
+    propRow.appendChild(valueEl);
+    propRow.appendChild(removeButton);
+
+    this.nodes.propRows.push(propRow);
+    this.nodes.propRowsWrapper.appendChild(propRow);
+  }
+
+  /**
+   * @param {number} index
+   */
+  onRemovePropRow(index) {
+    const node = this.nodes.propRows[index];
+
+    // remove node from list and reindex
+    this.nodes.propRows = this.nodes.propRows
+      .filter((_, idx) => idx !== index)
+      .map((n, idx) => {
+        n.dataset.index = idx;
+        return n;
+      });
+
+    node.remove();
   }
 }

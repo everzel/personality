@@ -1,14 +1,14 @@
 {
-  "name": "@editorjs/personality",
+  "name": "@scalemeup/characteristics-card",
   "version": "2.0.2",
-  "description": "Personality tool for Editor.js",
+  "description": "Characteristics Card tool for Editor.js",
   "scripts": {
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/editor-js/personality.git"
+    "url": "git+https://github.com/ScaleMeUp/editorjs-characteristics-card.git"
   },
   "author": {
     "name": "CodeX",

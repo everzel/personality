@@ -4,7 +4,7 @@ module.exports = {
     path: __dirname + '/dist',
     publicPath: '/',
     filename: 'bundle.js',
-    library: 'Personality',
+    library: 'CharacteristicsCard',
     libraryTarget: 'umd',
     libraryExport: 'default'
   },

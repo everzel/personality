@@ -1,6 +1,37 @@
+# EditorJS Characteristics Card Tool
+
+## Features
+- Added possibility to set unlimited properties (name and values)
+- Store all properties of uploaded image
+- UI Updated
+
+## Install
+```
+yarn add https://github.com/ScaleMeUp/editorjs-characteristics-card#speka
+```
+
+## Usage
+```js
+tools: {
+    characteristicsCard: {
+        class: CharacteristicsCard,
+        config: {
+            endpoint: 'http://localhost:8008/uploadFile',
+            buttonLabel: '+ Add',
+            propNamePlaceholder: 'Name',
+            propValuePlaceholder: 'Value',
+        },
+    }
+},
+```
+
+
+
+-------------------
+
 ![](https://badgen.net/badge/Editor.js/v2.0/blue)
 
-# Personality Tool 
+## Personality Tool 
 
 Personality Tool for the [Editor.js](https://editorjs.io).
 
