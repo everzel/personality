@@ -22,6 +22,9 @@ const LOADER_DELAY = 500;
  * @property {string} endpoint - image file upload url
  * @property {string} field - field name for uploaded image
  * @property {string} types - available mime-types
+ * @property {string} buttonLabel - label for add button
+ * @property {object} additionalRequestData - any data to send with requests
+ * @property {object} additionalRequestHeaders - allows to pass custom headers with Request
  * @property {string} propNamePlaceholder - placeholder for name field
  * @property {string} propValuePlaceholder - placeholder for value field
  */
@@ -61,6 +64,8 @@ export default class CharacteristicsCard {
       endpoint: config.endpoint || '',
       field: config.field || 'image',
       types: config.types || 'image/*',
+      additionalRequestData: config.additionalRequestData || {},
+      additionalRequestHeaders: config.additionalRequestHeaders || {},
       buttonLabel: config.buttonLabel || '+ Add',
       propNamePlaceholder: config.propNamePlaceholder || 'Name',
       propValuePlaceholder: config.propValuePlaceholder || 'Value'
