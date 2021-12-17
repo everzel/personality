@@ -118,7 +118,7 @@ export default class CharacteristicsCard {
   showFullImage() {
     setTimeout(() => {
       this.nodes.photo.classList.remove(this.CSS.loader);
-      this.nodes.photo.style.background = `url('${this.data.photo.url}') center center / cover no-repeat`;
+      this.nodes.photo.style.background = `url('${this.data.photo.url}') center center / contain no-repeat`;
     }, LOADER_DELAY);
   }
 
@@ -226,7 +226,7 @@ export default class CharacteristicsCard {
     this.nodes.photo = this.make('div', this.CSS.photo);
 
     if (photo) {
-      this.nodes.photo.style.background = `url('${photo.url}') center center / cover no-repeat`;
+      this.nodes.photo.style.background = `url('${photo.url}') center center / contain no-repeat`;
     }
 
     this.nodes.photo.addEventListener('click', () => {
