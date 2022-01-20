@@ -1,5 +1,5 @@
 {
-  "name": "@editorjs/personality",
+  "name": "@everzel/personality",
   "version": "2.0.2",
   "description": "Personality tool for Editor.js",
   "scripts": {
