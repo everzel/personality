@@ -107,7 +107,7 @@ export default class Personality {
     const { body: { success, file } } = response;
 
     if (success && file && file.url) {
-      this.data.photo = file.url;
+      this.data.photo = file;
 
       this.showFullImage();
     }
@@ -119,7 +119,7 @@ export default class Personality {
   showFullImage() {
     setTimeout(() => {
       this.nodes.photo.classList.remove(this.CSS.loader);
-      this.nodes.photo.style.background = `url('${this.data.photo}') center center / cover no-repeat`;
+      this.nodes.photo.style.background = `url('${this.data.photo.url}') center center / contain no-repeat`;
     }, LOADER_DELAY);
   }
 
