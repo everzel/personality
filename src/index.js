@@ -27,6 +27,7 @@ const LOADER_DELAY = 500;
  * @property {object} additionalRequestHeaders - allows to pass custom headers with Request
  * @property {string} propNamePlaceholder - placeholder for name field
  * @property {string} propValuePlaceholder - placeholder for value field
+ * @property {string} title - placeholder for value field
  */
 
 /**
@@ -94,7 +95,7 @@ export default class Personality {
   static get toolbox() {
     return {
       icon: ToolboxIcon,
-      title: this.config.title
+      title: 'Persona'
     };
   }
 
