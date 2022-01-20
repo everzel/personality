@@ -21,7 +21,7 @@ You can get the package using any of these ways.
 Get the package
 
 ```shell
-npm i --save-dev @editorjs/personality
+yarn add https://github.com/everzel/personality#master
 ```
 
 Include module at your application
