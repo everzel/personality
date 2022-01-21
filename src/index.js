@@ -44,7 +44,7 @@ const LOADER_DELAY = 500;
 /**
  * Personality Tool for the Editor.js
  */
-export default class Person {
+export default class Feature {
   /**
    * @param {PersonalityToolData} data - Tool's data
    * @param {PersonalityConfig} config - Tool's config
@@ -97,7 +97,7 @@ export default class Person {
   static get toolbox() {
     return {
       icon: ToolboxIcon,
-      title: 'Person'
+      title: 'Feature'
     };
   }
 
