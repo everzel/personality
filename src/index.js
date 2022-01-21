@@ -25,8 +25,9 @@ const LOADER_DELAY = 500;
  * @property {string} buttonLabel - label for add button
  * @property {object} additionalRequestData - any data to send with requests
  * @property {object} additionalRequestHeaders - allows to pass custom headers with Request
- * @property {string} propNamePlaceholder - placeholder for name field
- * @property {string} propValuePlaceholder - placeholder for value field
+ * @property {string} namePlaceholder - placeholder for name field
+ * @property {string} descriptionPlaceholder - placeholder for value field
+ * @property {string} linkPlaceholder - placeholder for value field
  * @property {string} title - placeholder for value field
  */
 
@@ -43,7 +44,7 @@ const LOADER_DELAY = 500;
 /**
  * Personality Tool for the Editor.js
  */
-export default class Personality {
+export default class Person {
   /**
    * @param {PersonalityToolData} data - Tool's data
    * @param {PersonalityConfig} config - Tool's config
@@ -67,8 +68,9 @@ export default class Personality {
       additionalRequestData: config.additionalRequestData || {},
       additionalRequestHeaders: config.additionalRequestHeaders || {},
       buttonLabel: config.buttonLabel || '+ Add',
-      propNamePlaceholder: config.propNamePlaceholder || 'Name',
-      propValuePlaceholder: config.propValuePlaceholder || 'Value',
+      namePlaceholder: config.namePlaceholder || 'Name',
+      linkPlaceholder: config.linkPlaceholder || 'Link',
+      descriptionPlaceholder: config.descriptionPlaceholder || 'Description',
       title: config.title || 'Personality'
     };
 
@@ -95,7 +97,7 @@ export default class Personality {
   static get toolbox() {
     return {
       icon: ToolboxIcon,
-      title: 'Persona'
+      title: 'Person'
     };
   }
 
@@ -222,7 +224,7 @@ export default class Personality {
     this.nodes.photo = this.make('div', this.CSS.photo);
 
     if (photo) {
-      this.nodes.photo.style.background = `url('${photo}') center center / cover no-repeat`;
+      this.nodes.photo.style.background = `url('${photo.url}') center center / cover no-repeat`;
     }
 
     if (description) {
